@@ -4,7 +4,7 @@ import storage from "redux-persist/lib/storage";
 
 import userReducer from "./user/user.reducer";
 import giftsReducer from "./gifts/gifts.reducer";
-
+import invitationsReducer from "./invitations/invitations.reducer";
 const persistConfig = {
   key: "root",
   storage,
@@ -14,6 +14,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   gifts: giftsReducer,
+  invitations: invitationsReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);

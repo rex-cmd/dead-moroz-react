@@ -11,7 +11,6 @@ import Header from "./components/header/header.component";
 import NewGiftPage from "./pages/newgift/newgiftpage.component";
 import { emailSignInStart } from "./redux/user/user.actions";
 import { withCookies } from "react-cookie";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = (props) => {
   const dispatch = useDispatch();

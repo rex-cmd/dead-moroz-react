@@ -11,36 +11,36 @@ import {
   newGiftFailure,
   editGift,
 } from "./gifts.actions";
-import { getCurrentUser } from "../../rails-api/rails-api.utils";
+// import { getCurrentUser } from "../../rails-api/rails-api.utils";
 export function* fetchGifts() {
   try {
-    const userAuth = yield call(getCurrentUser);
+    const currentUser = yield select((store) => store.user.currentUser);
     const gifts = yield call(axios, {
       method: "get",
-      url: `http://localhost:3001/users/${userAuth.data.data.id}/gifts`,
-      headers: { Authorization: userAuth.headers.authorization },
+      url: `http://localhost:3001/users/${currentUser.id}/gifts`,
+      headers: { Authorization: currentUser.authorization },
     });
     yield put(getGiftsSuccess(gifts.data));
   } catch (error) {
     yield put(getGiftsFailure(error));
   }
 }
-const selectImages = (gifts, user) => {
+const selectImages = (gifts, currentUser) => {
   return Promise.all(
     gifts.map(({ id }) =>
       axios({
         method: "get",
-        url: `http://localhost:3001/users/${user.data.data.id}/gifts/${id}`,
-        headers: { Authorization: user.headers.authorization },
+        url: `http://localhost:3001/users/${currentUser.id}/gifts/${id}`,
+        headers: { Authorization: currentUser.authorization },
       })
     )
   );
 };
 export function* fetchImages() {
   try {
-    const userAuth = yield call(getCurrentUser);
+    const currentUser = yield select((store) => store.user.currentUser);
     const gifts = yield select((store) => store.gifts.gifts);
-    const images = yield call(selectImages, gifts, userAuth);
+    const images = yield call(selectImages, gifts, currentUser);
     yield put(getImagesSuccess(images.map((image) => image.data[0].image.url)));
   } catch (error) {
     yield put(getImagesFailure(error));
@@ -48,12 +48,12 @@ export function* fetchImages() {
 }
 export function* createGift({ payload: { title, description, image } }) {
   try {
-    const userAuth = yield call(getCurrentUser);
+    const currentUser = yield select((store) => store.user.currentUser);
     const gift = yield call(axios, {
       method: "post",
-      url: `http://localhost:3001/users/${userAuth.data.data.id}/gifts`,
+      url: `http://localhost:3001/users/${currentUser.id}/gifts`,
       data: { gift: { title, description, image } },
-      headers: { Authorization: userAuth.headers.authorization },
+      headers: { Authorization: currentUser.authorization },
     });
     yield put(newGiftSuccess(gift));
   } catch (error) {

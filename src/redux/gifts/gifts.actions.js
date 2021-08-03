@@ -1,4 +1,3 @@
-import UserActionTypes from "../user/user.types";
 import GiftsActionTypes from "./gifts.types";
 export const getGifts = () => ({
   type: GiftsActionTypes.GET_GIFTS,

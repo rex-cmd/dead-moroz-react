@@ -1,4 +1,4 @@
-import { takeLatest, put, all, call } from "redux-saga/effects";
+import { takeLatest, put, all, call, select } from "redux-saga/effects";
 import axios from "axios";
 import UserActionTypes from "./user.types";
 
@@ -11,10 +11,7 @@ import {
   signUpFailure,
 } from "./user.actions";
 
-import {
-  createUserProfileDocument,
-  getCurrentUser,
-} from "../../rails-api/rails-api.utils";
+import { createUserProfileDocument } from "../../rails-api/rails-api.utils";
 
 export function* getSnapshotFromUserAuth(userAuth, additionalData) {
   try {
@@ -23,8 +20,14 @@ export function* getSnapshotFromUserAuth(userAuth, additionalData) {
       userAuth,
       additionalData
     );
-    console.log("userAuth", userAuth);
-    yield put(signInSuccess({ id: userRef.id, email: userRef.email }));
+    console.log("userRef", userRef);
+    yield put(
+      signInSuccess({
+        id: userRef.id,
+        email: userRef.email,
+        authorization: userRef.authorization,
+      })
+    );
   } catch (error) {
     yield put(signInFailure(error));
   }
@@ -37,32 +40,23 @@ export function* signInWithEmail({ payload: { email, password } }) {
       url: "http://localhost:3001/users/sign_in ",
       data: { user: { email, password } },
     });
-    localStorage.setItem("current_user", JSON.stringify(user));
+    // localStorage.setItem("current_user", JSON.stringify(user));
     yield getSnapshotFromUserAuth(user);
   } catch (error) {
     yield put(signInFailure(error));
   }
 }
 
-// export function* isUserAuthenticated() {
-//   try {
-//     const userAuth = yield getCurrentUser();
-//     if (!userAuth) return;
-//     yield getSnapshotFromUserAuth(userAuth);
-//   } catch (error) {
-//     yield put(signInFailure(error));
-//   }
-// }
-
 export function* signOut() {
   try {
-    let userAuth = yield getCurrentUser();
+    const authorization = yield select(
+      (store) => store.user.currentUser.authorization
+    );
     yield call(axios, {
       method: "delete",
       url: "http://localhost:3001/users/sign_out ",
-      headers: { Authorization: userAuth.headers.authorization },
+      headers: { Authorization: authorization },
     });
-    localStorage.removeItem("current_user");
     yield put(signOutSuccess());
   } catch (error) {
     yield put(signOutFailure(error));

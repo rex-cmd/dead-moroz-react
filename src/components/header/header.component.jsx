@@ -11,7 +11,6 @@ import {
   OptionsContainer,
   OptionLink,
 } from "./header.styles";
-import Cookies from "universal-cookie";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -19,26 +18,26 @@ const Header = () => {
   const [cookies, removeCookie] = useCookies(["user"]);
   return (
     <HeaderContainer>
-      <LogoContainer to="/">
-        <Logo className="logo" />
-      </LogoContainer>
+      <LogoContainer to="/">{/* <Logo className="logo" /> */}</LogoContainer>
       <OptionsContainer>
-        <OptionLink to="/giftspage">My Gifts</OptionLink>
-        <OptionLink to="/userspage">Users</OptionLink>
-        <OptionLink to="/invitationspage">Invitations</OptionLink>
         {currentUser ? (
-          <OptionLink
-            as="div"
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(signOutStart());
-              removeCookie("user");
-              removeCookie("email");
-              removeCookie("password");
-            }}
-          >
-            SIGN OUT
-          </OptionLink>
+          <OptionsContainer>
+            <OptionLink to="/giftspage">My Gifts</OptionLink>
+            <OptionLink to="/userspage">Users</OptionLink>
+            <OptionLink to="/invitationspage">Invitations</OptionLink>
+            <OptionLink
+              as="div"
+              onClick={(e) => {
+                e.preventDefault();
+                dispatch(signOutStart());
+                removeCookie("user");
+                removeCookie("email");
+                removeCookie("password");
+              }}
+            >
+              SIGN OUT
+            </OptionLink>
+          </OptionsContainer>
         ) : (
           <OptionLink to="/signin">SIGN IN</OptionLink>
         )}

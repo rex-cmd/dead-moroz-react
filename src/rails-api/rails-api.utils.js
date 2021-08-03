@@ -15,9 +15,12 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
   if (!userGet.exists) {
     const { email } = userPost.data.data.attributes;
+    const { id } = userPost.data.data;
     try {
       userGet = {
+        id: id,
         email: email,
+        authorization: access_token,
       };
     } catch (error) {
       console.log("error creating user", error.message);

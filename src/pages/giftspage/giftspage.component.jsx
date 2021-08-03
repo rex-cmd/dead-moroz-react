@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { GiftsPageContainer } from "./giftspage.styles";
-import Button from "react-bootstrap/Button";
+import { GiftsPageContainer, Button } from "./giftspage.styles";
+// import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { getGifts } from "../../redux/gifts/gifts.actions";
 import { OptionLink } from "./giftspage.styles";
@@ -10,13 +10,12 @@ import { OptionLink } from "./giftspage.styles";
 const GiftsPage = () => {
   const gifts = useSelector((store) => store.gifts.gifts);
   const images = useSelector((store) => store.gifts.images);
-
+  const currentUser = useSelector((store) => store.user.currentUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getGifts());
-  }, []);
-
+  }, [currentUser]);
   return (
     <GiftsPageContainer>
       {gifts.map((gift, index) => (
@@ -26,7 +25,7 @@ const GiftsPage = () => {
             <Card.Title>{gift.title}</Card.Title>
             <Card.Text>{gift.description}</Card.Text>
             <Button variant="primary">Edit</Button>
-            <Button variant="primary">Deleet</Button>
+            <Button variant="primary">Delete</Button>
           </Card.Body>
         </Card>
       ))}

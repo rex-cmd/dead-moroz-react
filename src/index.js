@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./redux/store";
 import { CookiesProvider } from "react-cookie";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import App from "./App";
 
